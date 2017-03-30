@@ -21,7 +21,7 @@ class User extends CI_Controller {
         $this->load->view('user/login');
     }
     
-    public function check_login() {
+    public function check_login() {        
         $email = $this->input->post('email');
         $password = $this->input->post('password');
         if ($this->authex->login($email, $password)) {
@@ -39,4 +39,8 @@ class User extends CI_Controller {
         $this->load->view('user/login_failed');
     }
 
+    public function logout() {
+        $this->authex->logout();
+        $this->load->view('user/logout');
+    }
 }

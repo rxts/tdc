@@ -27,9 +27,10 @@ class Authex {
 
     function login($email, $password) {
         $CI = & get_instance();
+        $CI->load->database();        
         $data = array(
             'email' => $email,
-            'password' => sha1($password)
+            'password' =>  $password
         );
         $query = $CI->db->get_where('users', $data);
         if ($query->num_rows() !== 1) {
@@ -55,7 +56,7 @@ class Authex {
         if ($this->can_register($email)) {
             $data = array(
                 'email' => $email,
-                'password' => sha1($password)
+                'password' =>  ($password)
             );
             $CI->db->insert('users', $data);
             return true;
