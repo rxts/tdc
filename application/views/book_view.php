@@ -61,12 +61,11 @@
 
             <tfoot>
                 <tr>
-                    <th>Book ID</th>
-                    <th>Book ISBN</th>
-                    <th>Book Title</th>
-                    <th>Book Author</th>
-                    <th>Book Category</th>
-                    <th>Action</th>
+                    <th>STT</th>
+                    <th>ISBN</th>
+                    <th>Tựa</th>
+                    <th>Tác giả</th>
+                    <th>Thể loại</th>
                 </tr>
             </tfoot>
         </table>
@@ -80,128 +79,121 @@
 
 
     <script type="text/javascript">
-                                                                              $(document).ready(function () {
-                                                                                  $('#table_id').DataTable();
-                                                                              });
-                                                                              var save_method; //for save method string
-                                                                              var table;
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+        var save_method; //for save method string
+        var table;
 
 
-                                                                              function add_book()
-                                                                              {
-                                                                                  save_method = 'add';
-                                                                                  $('#form')[0].reset(); // reset form on modals
-                                                                                  $('#modal_form').modal('show'); // show bootstrap modal
-                                                                                  //$('.modal-title').text('Add Person'); // Set Title to Bootstrap modal title
-                                                                              }
+        function add_book()
+        {
+            save_method = 'add';
+            $('#form')[0].reset(); // reset form on modals
+            $('#modal_form').modal('show'); // show bootstrap modal
+            //$('.modal-title').text('Add Person'); // Set Title to Bootstrap modal title
+        }
 
-                                                                              function edit_book(id)
-                                                                              {
-                                                                                  save_method = 'update';
-                                                                                  $('#form')[0].reset(); // reset form on modals
+        function edit_book(id)
+        {
+            save_method = 'update';
+            $('#form')[0].reset(); // reset form on modals
 
-                                                                                  //Ajax Load data from ajax
-                                                                                  $.ajax({
-                                                                                      url: "<?php echo site_url('index.php/book/ajax_edit/') ?>/" + id,
-                                                                                      type: "GET",
-                                                                                      dataType: "JSON",
-                                                                                      success: function (data)
-                                                                                      {
+            //Ajax Load data from ajax
+            $.ajax({
+                url: "<?php echo site_url('index.php/book/ajax_edit/') ?>/" + id,
+                type: "GET",
+                dataType: "JSON",
+                success: function (data)
+                {
 
-                                                                                          $('[name="book_id"]').val(data.book_id);
-                                                                                          $('[name="book_isbn"]').val(data.book_isbn);
-                                                                                          $('[name="book_title"]').val(data.book_title);
-                                                                                          $('[name="book_author"]').val(data.book_author);
-                                                                                          $('[name="book_category"]').val(data.book_category);
+                    $('[name="book_id"]').val(data.book_id);
+                    $('[name="book_isbn"]').val(data.book_isbn);
+                    $('[name="book_title"]').val(data.book_title);
+                    $('[name="book_author"]').val(data.book_author);
+                    $('[name="book_category"]').val(data.book_category);
 
 
-                                                                                          $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
-                                                                                          $('.modal-title').text('Chỉnh sửa'); // Set title to Bootstrap modal title
+                    $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
+                    $('.modal-title').text('Chỉnh sửa'); // Set title to Bootstrap modal title
 
-                                                                                      },
-                                                                                      error: function (jqXHR, textStatus, errorThrown)
-                                                                                      {
-                                                                                          alert('Error get data from ajax');
-                                                                                      }
-                                                                                  });
-                                                                              }
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error get data from ajax');
+                }
+            });
+        }
 
-                                                                              function get_book_title(id) {
-                                                                                var the_title;
-                                                                                $('.book-title').each(function(){
-                                                                                    if ($(this).attr('book_id') == id) {
-                                                                                        the_title = $(this).text();
-                                                                                    }
-                                                                                });
-                                                                                return the_title;
-                                                                              }
+        function get_book_title(id) {
+            var the_title;
+            $('.book-title').each(function () {
+                if ($(this).attr('book_id') == id) {
+                    the_title = $(this).text();
+                }
+            });
+            return the_title;
+        }
 
-                                                                              function save()
-                                                                              {
-                                                                                  var url;
-                                                                                  if (save_method == 'add')
-                                                                                  {
-                                                                                      url = "<?php echo site_url('index.php/book/book_add') ?>";
-                                                                                  }
-                                                                                  else
-                                                                                  {
-                                                                                      url = "<?php echo site_url('index.php/book/book_update') ?>";
-                                                                                  }
+        function save()
+        {
+            var url;
+            if (save_method == 'add')
+            {
+                url = "<?php echo site_url('index.php/book/book_add') ?>";
+            } else
+            {
+                url = "<?php echo site_url('index.php/book/book_update') ?>";
+            }
 
-                                                                                  // ajax adding data to database
-                                                                                  $.ajax({
-                                                                                      url: url,
-                                                                                      type: "POST",
-                                                                                      data: $('#form').serialize(),
-                                                                                      dataType: "JSON",
-                                                                                      success: function (data)
-                                                                                      {
-                                                                                          //if success close modal and reload ajax table
-                                                                                          $('#modal_form').modal('hide');
-                                                                                          location.reload();// for reload a page
-                                                                                      },
-                                                                                      error: function (jqXHR, textStatus, errorThrown)
-                                                                                      {
-                                                                                          alert('Error adding / update data');
-                                                                                      }
-                                                                                  });
-                                                                              }
-                                                                              
-                                                                              
-                                                                              function confirm_delete(id) {
-                                                                                save_method = 'delete';
-                                                                                  $('#form')[0].reset(); // reset form on modals
-                                                                                  $('#modal_form').modal('show'); // show bootstrap modal
-                                                                                  $('.modal-title').text('Delete this book');
-                                                                                  $('.form-body').text('Do you want to delete: "' + get_book_title(id) + '"');
-                                                                                  $('.modal-footer').html('<button type="button" id="btnConfirmDelete" class="btn btn-danger">Delete</button><button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>');
-                                                                                $('#btnConfirmDelete').on('click', function(){
-                                                                                    delete_book(id);
-                                                                                });                                                                                
-                                                                              }
-                                                                              function delete_book(id)
-                                                                              {
-                                                                                  //if (confirm('Are you sure delete this data?'))
-                                                                                  //{
-                                                                                      // ajax delete data from database
-                                                                                      $.ajax({
-                                                                                          url: "<?php echo site_url('index.php/book/book_delete') ?>/" + id,
-                                                                                          type: "POST",
-                                                                                          dataType: "JSON",
-                                                                                          success: function (data)
-                                                                                          {
-                                                                                              $('#modal_delete').modal('hide');
-                                                                                              location.reload();
-                                                                                          },
-                                                                                          error: function (jqXHR, textStatus, errorThrown)
-                                                                                          {
-                                                                                              alert('Error deleting data');
-                                                                                          }
-                                                                                      });
+            // ajax adding data to database
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: $('#form').serialize(),
+                dataType: "JSON",
+                success: function (data)
+                {
+                    //if success close modal and reload ajax table
+                    $('#modal_form').modal('hide');
+                    location.reload();// for reload a page
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error adding / update data');
+                }
+            });
+        }
 
-                                                                                  //}
-                                                                              }
 
+        function confirm_delete(id) {
+            save_method = 'delete';
+            $('#form')[0].reset(); // reset form on modals
+            $('#modal_form').modal('show'); // show bootstrap modal
+            $('.modal-title').text('Delete this book');
+            $('.form-body').text('Do you want to delete: "' + get_book_title(id) + '"');
+            $('.modal-footer').html('<button type="button" id="btnConfirmDelete" class="btn btn-danger">Delete</button><button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>');
+            $('#btnConfirmDelete').on('click', function () {
+                delete_book(id);
+            });
+        }
+        function delete_book(id)
+        {
+            $.ajax({
+                url: "<?php echo site_url('index.php/book/book_delete') ?>/" + id,
+                type: "POST",
+                dataType: "JSON",
+                success: function (data)
+                {
+                    $('#modal_delete').modal('hide');
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error deleting data');
+                }
+            });
+        }
     </script>
 
     <!-- Bootstrap modal -->
